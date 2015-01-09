@@ -1,0 +1,23 @@
+{
+  "name": "nvd3-boxplot",
+  "version": "0.1.0",
+  "homepage": "https://github.com/analyticboard/nvd3-boxplot",
+  "authors": [
+    "Jaime Garcia <jaimegarcia@analyticboard.com>"
+  ],
+  "description": "NVD3 Boxplot Chart",
+  "main": "index.html",
+  "keywords": [
+    "nvd3",
+    "boxplot"
+  ],
+  "license": "MIT",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ]
+}
