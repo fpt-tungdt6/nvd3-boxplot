@@ -10,7 +10,7 @@ nv.dev = true //set false when in production
 
 });*/
 
-nv.models.multibarboxplotChart = function() {
+nv.models.multiBoxplotChart = function() {
   "use strict";
   //============================================================
   // Public Variables with Default Settings
