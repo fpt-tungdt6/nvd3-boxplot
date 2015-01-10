@@ -1,4 +1,4 @@
-//(function($){
+(function(){
 
 var nv = window.nv || {};
 
@@ -6,7 +6,7 @@ var nv = window.nv || {};
 nv.version = '1.1.15b';
 nv.dev = true //set false when in production
 
-/*nv.models.multibarboxplotChart = $.extend(true, nv.models.multiBarChart, {
+/*nv.models.multiboxplotboxplotChart = $.extend(true, nv.models.multiboxplotChart, {
 
 });*/
 
@@ -16,7 +16,7 @@ nv.models.multiBoxplotChart = function() {
   // Public Variables with Default Settings
   //------------------------------------------------------------
 
-  var multibar = nv.models.multiBoxplot()
+  var multiboxplot = nv.models.multiBoxplot()
     , xAxis = nv.models.axis()
     , yAxis = nv.models.axis()
     , legend = nv.models.legend()
@@ -51,7 +51,7 @@ nv.models.multiBoxplotChart = function() {
     , transitionDuration = 250
     ;
 
-  multibar
+  multiboxplot
     .stacked(false)
     ;
   xAxis
@@ -79,8 +79,8 @@ nv.models.multiBoxplotChart = function() {
         right = left + e.pos["range"],
         //top = e.pos["y"] + ( offsetElement.offsetTop || 0),
 
-        x = xAxis.tickFormat()(multibar.x()(e.point, e.pointIndex)),
-        y = yAxis.tickFormat()(multibar.y()(e.point, e.pointIndex)),
+        x = xAxis.tickFormat()(multiboxplot.x()(e.point, e.pointIndex)),
+        y = yAxis.tickFormat()(multiboxplot.y()(e.point, e.pointIndex)),
         
         pos = [ e.pos["y1"], e.pos["y2"], e.pos["y3"], e.pos["y4"], e.pos["y5"] ];
 
@@ -202,8 +202,8 @@ nv.models.multiBoxplotChart = function() {
       //------------------------------------------------------------
       // Setup Scales
 
-      x = multibar.xScale();
-      y = multibar.yScale();
+      x = multiboxplot.xScale();
+      y = multiboxplot.yScale();
 
       //------------------------------------------------------------
 
@@ -230,7 +230,7 @@ nv.models.multiBoxplotChart = function() {
       if (showLegend) {
         legend.width(availableWidth - controlWidth());
 
-        if (multibar.barColor())
+        if (multiboxplot.barColor())
           data.forEach(function(series,i) {
             series.color = d3.rgb('#ccc').darker(i * 1.5).toString();
           })
@@ -257,8 +257,8 @@ nv.models.multiBoxplotChart = function() {
 
       if (showControls) {
         var controlsData = [
-          { key: 'Grouped', disabled: multibar.stacked() },
-          { key: 'Stacked', disabled: !multibar.stacked() }
+          { key: 'Grouped', disabled: multiboxplot.stacked() },
+          { key: 'Stacked', disabled: !multiboxplot.stacked() }
         ];
 
         controls.width(controlWidth()).color(['#444', '#444', '#444']);
@@ -281,7 +281,7 @@ nv.models.multiBoxplotChart = function() {
       //------------------------------------------------------------
       // Main Chart Component(s)
 
-      multibar
+      multiboxplot
         .disabled(data.map(function(series) { return series.disabled }))
         .width(availableWidth)
         .height(availableHeight)
@@ -293,7 +293,7 @@ nv.models.multiBoxplotChart = function() {
       var barsWrap = g.select('.nv-barsWrap')
           .datum(data.filter(function(d) { return !d.disabled }))
 
-      barsWrap.transition().call(multibar);
+      barsWrap.transition().call(multiboxplot);
 
       //------------------------------------------------------------
 
@@ -392,14 +392,14 @@ nv.models.multiBoxplotChart = function() {
 
         switch (d.key) {
           case 'Grouped':
-            multibar.stacked(false);
+            multiboxplot.stacked(false);
             break;
           case 'Stacked':
-            multibar.stacked(true);
+            multiboxplot.stacked(true);
             break;
         }
 
-        state.stacked = multibar.stacked();
+        state.stacked = multiboxplot.stacked();
         dispatch.stateChange(state);
 
         chart.update();
@@ -423,7 +423,7 @@ nv.models.multiBoxplotChart = function() {
         }
 
         if (typeof e.stacked !== 'undefined') {
-          multibar.stacked(e.stacked);
+          multiboxplot.stacked(e.stacked);
           state.stacked = e.stacked;
         }
 
@@ -443,7 +443,7 @@ nv.models.multiBoxplotChart = function() {
   // Event Handling/Dispatching (out of chart's scope)
   //------------------------------------------------------------
 
-  multibar.dispatch.on('elementMouseover.tooltip', function(e) {
+  multiboxplot.dispatch.on('elementMouseover.tooltip', function(e) {
     //e.pos = [e.pos[0] +  margin.left, e.pos[1] + margin.top];
     console.log(e)
     e.pos.x = e.pos.x + margin.left;
@@ -451,7 +451,7 @@ nv.models.multiBoxplotChart = function() {
     dispatch.tooltipShow(e);
   });
 
-  multibar.dispatch.on('elementMouseout.tooltip', function(e) {
+  multiboxplot.dispatch.on('elementMouseout.tooltip', function(e) {
     dispatch.tooltipHide(e);
   });
   dispatch.on('tooltipHide', function() {
@@ -467,12 +467,12 @@ nv.models.multiBoxplotChart = function() {
 
   // expose chart's sub-components
   chart.dispatch = dispatch;
-  chart.multibar = multibar;
+  chart.multiboxplot = multiboxplot;
   chart.legend = legend;
   chart.xAxis = xAxis;
   chart.yAxis = yAxis;
 
-  d3.rebind(chart, multibar, 'x', 'y', 'xDomain', 'yDomain', 'xRange', 'yRange', 'forceX', 'forceY', 'clipEdge',
+  d3.rebind(chart, multiboxplot, 'x', 'y', 'xDomain', 'yDomain', 'xRange', 'yRange', 'forceX', 'forceY', 'clipEdge',
    'id', 'stacked', 'stackOffset', 'delay', 'barColor','groupSpacing');
 
   chart.options = nv.utils.optionsFunc.bind(chart);
@@ -597,9 +597,9 @@ nv.models.multiBoxplotChart = function() {
   };
 
   //added by tungdt
-  chart.multibar = function(_) {
-    if (!arguments.length) return multibar;
-    multibar = _;
+  chart.multiboxplot = function(_) {
+    if (!arguments.length) return multiboxplot;
+    multiboxplot = _;
     return chart;
   };
 
@@ -637,7 +637,7 @@ nv.models.multiBoxplot = function() {
     , color = nv.utils.defaultColor()
     , hideable = false
     , barColor = null // adding the ability to set the color for each rather than the whole group
-    , disabled // used in conjunction with barColor to communicate from multiBarHorizontalChart what series are disabled
+    , disabled // used in conjunction with barColor to communicate from multiboxplotHorizontalChart what series are disabled
     , delay = 1200
     , xDomain
     , yDomain
@@ -1186,4 +1186,4 @@ nv.models.multiBoxplot = function() {
   return chart;
 }
 
-//})(jQuery);
+})();

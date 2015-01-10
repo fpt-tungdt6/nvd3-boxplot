@@ -1,46 +1,25 @@
 <!DOCTYPE html>
 <meta charset="utf-8">
 <link rel="stylesheet" type="text/css" href="bower_components/nvd3/nv.d3.min.css">
+<link rel="stylesheet" type="text/css" href="nv.boxplot.css">
 <style>
 
 body {
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
 }
 
-.box {
-  font: 10px sans-serif;
-  height: 400px;
-}
-
-.box line,
-.box rect,
-.box circle {
-  fill: steelblue;
-  stroke: #000;
-  stroke-width: 1px;
-}
-
-.box .center {
-  stroke-dasharray: 3,3;
-}
-
-.box .outlier {
-  fill: none;
-  stroke: #000;
-}
-
 .axis {
   font: 12px sans-serif;
 }
- 
+
 .axis path,
 .axis line {
   fill: none;
   stroke: #000;
   shape-rendering: crispEdges;
 }
- 
-.x.axis path { 
+
+.x.axis path {
   fill: none;
   stroke: #000;
   shape-rendering: crispEdges;
