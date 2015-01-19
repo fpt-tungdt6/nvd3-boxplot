@@ -800,9 +800,11 @@ nv.models.multiBoxplot = function() {
           .style('stroke-opacity', 1)
           .style('fill-opacity', .75);
 
-        groups.selectAll('g.box').remove(); //TODO: Temporaly solution - Improve
       var barContainers = groups.selectAll('g.box')	//added by Tung
       	  .data(function(d) { return (hideable && !data.length) ? hideable.values : d.values });
+
+      barContainers.exit().remove();
+
       var barContainersEnter = barContainers.enter().append('g');
 
       	  barContainers.attr("class", function(d,i) { return "box bar-container-" + i })
