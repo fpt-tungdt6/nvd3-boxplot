@@ -84,12 +84,11 @@ nv.models.multiBoxplotChart = function() {
         
         pos = [ e.pos["y1"], e.pos["y2"], e.pos["y3"], e.pos["y4"], e.pos["y5"] ];
 
-        console.log( top );
 
     pos.forEach(function(val,ind){
 
       var content = tooltip(e.series.key, x, val, e, chart);
-      nv.tooltip.show([ ind %2 == 0 ? left : right , e.pos.map(val) + 50],
+      nv.tooltip.show([ ind %2 == 0 ? left : right , e.pos.map(val) + 70 + margin.top], //:TODO Test solution with different heights
         content, 's', null, offsetElement);
     })
 
@@ -111,8 +110,6 @@ nv.models.multiBoxplotChart = function() {
   	}
 
   	function boxQuartiles(d) {
-        console.log("d")
-        console.log([ d3.quantile(d, 0.2), d3.quantile(d, .5), d3.quantile(d, .75) ])
   		return [ d3.quantile(d, .25), d3.quantile(d, .5), d3.quantile(d, .75) ];
   	}
 
@@ -406,8 +403,6 @@ nv.models.multiBoxplotChart = function() {
       });
 
       dispatch.on('tooltipShow', function(e) {
-          console.log("parentNode")
-          console.log(this.parentNode)
         if (tooltips) showTooltip(e, that.parentNode)
       });
 
@@ -445,7 +440,6 @@ nv.models.multiBoxplotChart = function() {
 
   multiboxplot.dispatch.on('elementMouseover.tooltip', function(e) {
     //e.pos = [e.pos[0] +  margin.left, e.pos[1] + margin.top];
-    console.log(e)
     e.pos.x = e.pos.x + margin.left;
 
     dispatch.tooltipShow(e);
