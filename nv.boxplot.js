@@ -715,9 +715,26 @@ nv.models.multiBoxplot = function() {
                 return { x: getX(d,i), y: getY(d,i), y0: d.y0, y1: d.y1, max: d.max }	//y0 y1: stack, no need
               })
             });
+      //Lcongote Modificado 13 de sept 2015, debido a que cuando el dominio tenia un valor negativo lo calculaba mal 
+      var tempMM=[];
+      seriesData.forEach(function(dataSerie){
+        dataSerie.forEach(function(dataY){
+          //console.log(JSON.stringify(dataY["y"]));
+          dataY["y"].forEach(function(d){
+            tempMM.push(d);
+          }) 
+        })
+        
+      })
+      
+      y.domain(yDomain || d3.extent(tempMM))
+          .range(yRange || [availableHeight, 0]); //edited by Tung
 
-      x.domain(xDomain || d3.merge(seriesData).map(function(d) { return d.x }))
-          .rangeBands(xRange || [0, availableWidth], groupSpacing);
+      /*x.domain(xDomain || d3.merge(seriesData).map(function(d) { return d.x }))
+          .rangeBands(xRange || [0, availableWidth], groupSpacing);*/
+      //Lcongote Modificado 13 de sept 2015, debido a que cuando el dominio tenia un valor negativo lo calculaba mal 
+      
+      
 
       //y   .domain(yDomain || d3.extent(d3.merge(seriesData).map(function(d) { return d.y + (stacked ? d.y1 : 0) }).concat(forceY)))
       y.domain(yDomain || d3.extent(d3.merge(seriesData).map(function(d) { return d.max }).concat(forceY)))
