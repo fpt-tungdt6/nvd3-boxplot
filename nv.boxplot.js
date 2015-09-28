@@ -1032,7 +1032,7 @@ nv.models.multiBoxplot = function() {
             .attr('width', x.rangeBand() / data.length)
             .attr('y', function(d,i) {
                 return getUpperY(d,i) < 0 ?	//edited
-                        y(0) :
+                        y(getUpperY(d,i)) ://modificado Lcongote, y(0) ->y(getUpperY(d,i)), siempre inciiaba rectangulo en cero
                         y(0) - y(getUpperY(d,i)) < 1 ?
                           y(0) - 1 :
                         y(getUpperY(d,i)) || 0;
