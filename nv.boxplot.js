@@ -121,7 +121,8 @@ nv.models.multiBoxplotChart = function() {
   		    j = d.length;
   		while (d[++i] < q1 - iqr);
   		while (d[--j] > q3 + iqr);
-  		return [i, j];
+  		//return [i, j];//retorna los minimos y maximos utilizando 1.5 el rango intercuartil
+      return [0, (d.length)-1];//retorna el minimo y el maximo
   	}
 
   	var quartiles = boxQuartiles;
