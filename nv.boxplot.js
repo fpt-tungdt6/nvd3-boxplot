@@ -1,4 +1,4 @@
-(function($){
+(function(){
 
 var nv = window.nv || {};
 
@@ -6,17 +6,17 @@ var nv = window.nv || {};
 nv.version = '1.1.15b';
 nv.dev = true //set false when in production
 
-/*nv.models.multibarboxplotChart = $.extend(true, nv.models.multiBarChart, {
+/*nv.models.multiboxplotboxplotChart = $.extend(true, nv.models.multiboxplotChart, {
 
 });*/
 
-nv.models.multibarboxplotChart = function() {
+nv.models.multiBoxplotChart = function() {
   "use strict";
   //============================================================
   // Public Variables with Default Settings
   //------------------------------------------------------------
 
-  var multibar = nv.models.multiBoxplot()
+  var multiboxplot = nv.models.multiBoxplot()
     , xAxis = nv.models.axis()
     , yAxis = nv.models.axis()
     , legend = nv.models.legend()
@@ -51,7 +51,7 @@ nv.models.multibarboxplotChart = function() {
     , transitionDuration = 250
     ;
 
-  multibar
+  multiboxplot
     .stacked(false)
     ;
   xAxis
@@ -79,16 +79,16 @@ nv.models.multibarboxplotChart = function() {
         right = left + e.pos["range"],
         //top = e.pos["y"] + ( offsetElement.offsetTop || 0),
 
-        x = xAxis.tickFormat()(multibar.x()(e.point, e.pointIndex)),
-        y = yAxis.tickFormat()(multibar.y()(e.point, e.pointIndex)),
+        x = xAxis.tickFormat()(multiboxplot.x()(e.point, e.pointIndex)),
+        y = yAxis.tickFormat()(multiboxplot.y()(e.point, e.pointIndex)),
         
         pos = [ e.pos["y1"], e.pos["y2"], e.pos["y3"], e.pos["y4"], e.pos["y5"] ];
 
-        console.log( top );
 
-    $.each(pos, function(ind, val){
+    pos.forEach(function(val,ind){
+
       var content = tooltip(e.series.key, x, val, e, chart);
-      nv.tooltip.show([ ind %2 == 0 ? left : right , e.pos.map(val) + 50], 
+      nv.tooltip.show([ ind %2 == 0 ? left : right , e.pos.map(val) + 70 + margin.top], //:TODO Test solution with different heights
         content, 's', null, offsetElement);
     })
 
@@ -101,46 +101,49 @@ nv.models.multibarboxplotChart = function() {
 
   //added by Tung - 
   /*
-  	Translate an array into 5 value
+    Translate an array into 5 value
    */
   function transalateToBoxplotValue(data){
 
     function boxWhiskers(d) {
-  		return [ 0, d.length - 1 ];
-  	}
+      return [ 0, d.length - 1 ];
+    }
 
-  	function boxQuartiles(d) {
-  		return [ d3.quantile(d, .25), d3.quantile(d, .5), d3.quantile(d, .75) ];
-  	}
+    function boxQuartiles(d) {
+      return [ d3.quantile(d, .25), d3.quantile(d, .5), d3.quantile(d, .75) ];
+    }
 
-  	function whiskers(d, i) {
-  		var q1 = d.quartiles[0],
-  		    q3 = d.quartiles[2],
-  		    iqr = (q3 - q1) * 1.5,
-  		    i = -1,
-  		    j = d.length;
-  		while (d[++i] < q1 - iqr);
-  		while (d[--j] > q3 + iqr);
-  		return [i, j];
-  	}
+    function whiskers(d, i) {
+      //console.log(d);
+      var q1 = d.quartiles[0],
+          q3 = d.quartiles[2],
+          iqr = (q3 - q1) * 1.5,
+          i = -1,
+          j = d.length;
+      while (d[++i] < q1 - iqr);
+      while (d[--j] > q3 + iqr);
+      //return [i, j];//retorna los minimos y maximos utilizando 1.5 el rango intercuartil
+      return [0, (d.length)-1];//retorna el minimo y el maximo
+    }
 
-  	var quartiles = boxQuartiles;
+    var quartiles = boxQuartiles;
 
-  	data.forEach(function(series,i) {
-  		//series.color = d3.rgb('#ccc').darker(i * 1.5).toString();
-  		series.values.forEach(function(attr,i) {
-  			var d = attr.y.sort(d3.ascending);
-  			var quartileData = d.quartiles = attr.quartileData = quartiles(d);	//return 3 values
-  			attr.max = d[ d.length - 1 ];
-  			var whiskerIndices = whiskers 	//2 values
-  	            && whiskers.call(this, d, i)
-  	        , whiskerData = attr.whiskerData = whiskerIndices
-  	            && whiskerIndices.map(function(i) {
-  	              return d[i];
-  	            });
-  		})
+    data.forEach(function(series,i) {
+      //series.color = d3.rgb('#ccc').darker(i * 1.5).toString();
+      //console.log(series);
+      series.values.forEach(function(attr,i) {
+        var d = attr.y.sort(d3.ascending);
+        var quartileData = d.quartiles = attr.quartileData = quartiles(d);  //return 3 values
+        attr.max = d[ d.length - 1 ];
+        var whiskerIndices = whiskers   //2 values
+                && whiskers.call(this, d, i)
+            , whiskerData = attr.whiskerData = whiskerIndices
+                && whiskerIndices.map(function(i) {
+                  return d[i];
+                });
+      })
 
-  	})
+    })
   }
   //end by Tung
 
@@ -199,8 +202,8 @@ nv.models.multibarboxplotChart = function() {
       //------------------------------------------------------------
       // Setup Scales
 
-      x = multibar.xScale();
-      y = multibar.yScale();
+      x = multiboxplot.xScale();
+      y = multiboxplot.yScale();
 
       //------------------------------------------------------------
 
@@ -227,7 +230,7 @@ nv.models.multibarboxplotChart = function() {
       if (showLegend) {
         legend.width(availableWidth - controlWidth());
 
-        if (multibar.barColor())
+        if (multiboxplot.barColor())
           data.forEach(function(series,i) {
             series.color = d3.rgb('#ccc').darker(i * 1.5).toString();
           })
@@ -254,8 +257,8 @@ nv.models.multibarboxplotChart = function() {
 
       if (showControls) {
         var controlsData = [
-          { key: 'Grouped', disabled: multibar.stacked() },
-          { key: 'Stacked', disabled: !multibar.stacked() }
+          { key: 'Grouped', disabled: multiboxplot.stacked() },
+          { key: 'Stacked', disabled: !multiboxplot.stacked() }
         ];
 
         controls.width(controlWidth()).color(['#444', '#444', '#444']);
@@ -278,7 +281,7 @@ nv.models.multibarboxplotChart = function() {
       //------------------------------------------------------------
       // Main Chart Component(s)
 
-      multibar
+      multiboxplot
         .disabled(data.map(function(series) { return series.disabled }))
         .width(availableWidth)
         .height(availableHeight)
@@ -290,7 +293,7 @@ nv.models.multibarboxplotChart = function() {
       var barsWrap = g.select('.nv-barsWrap')
           .datum(data.filter(function(d) { return !d.disabled }))
 
-      barsWrap.transition().call(multibar);
+      barsWrap.transition().call(multiboxplot);
 
       //------------------------------------------------------------
 
@@ -354,7 +357,8 @@ nv.models.multibarboxplotChart = function() {
       }
 
 
-      if (showYAxis) {      
+      if (showYAxis) {  
+          //console.log(y);    
           yAxis
             .scale(y)
             .ticks( availableHeight / 36 )
@@ -389,14 +393,14 @@ nv.models.multibarboxplotChart = function() {
 
         switch (d.key) {
           case 'Grouped':
-            multibar.stacked(false);
+            multiboxplot.stacked(false);
             break;
           case 'Stacked':
-            multibar.stacked(true);
+            multiboxplot.stacked(true);
             break;
         }
 
-        state.stacked = multibar.stacked();
+        state.stacked = multiboxplot.stacked();
         dispatch.stateChange(state);
 
         chart.update();
@@ -418,7 +422,7 @@ nv.models.multibarboxplotChart = function() {
         }
 
         if (typeof e.stacked !== 'undefined') {
-          multibar.stacked(e.stacked);
+          multiboxplot.stacked(e.stacked);
           state.stacked = e.stacked;
         }
 
@@ -438,21 +442,14 @@ nv.models.multibarboxplotChart = function() {
   // Event Handling/Dispatching (out of chart's scope)
   //------------------------------------------------------------
 
-  multibar.dispatch.on('elementMouseover.tooltip', function(e) {
+  multiboxplot.dispatch.on('elementMouseover.tooltip', function(e) {
     //e.pos = [e.pos[0] +  margin.left, e.pos[1] + margin.top];
-
     e.pos.x = e.pos.x + margin.left;
-    e.pos.y1 = e.pos.y1 + margin.top;
-    e.pos.y2 = e.pos.y2 + margin.top;
-    e.pos.y3 = e.pos.y3 + margin.top;
-    e.pos.y4 = e.pos.y4 + margin.top;
-    e.pos.y5 = e.pos.y5 + margin.top;
-
 
     dispatch.tooltipShow(e);
   });
 
-  multibar.dispatch.on('elementMouseout.tooltip', function(e) {
+  multiboxplot.dispatch.on('elementMouseout.tooltip', function(e) {
     dispatch.tooltipHide(e);
   });
   dispatch.on('tooltipHide', function() {
@@ -468,12 +465,12 @@ nv.models.multibarboxplotChart = function() {
 
   // expose chart's sub-components
   chart.dispatch = dispatch;
-  chart.multibar = multibar;
+  chart.multiboxplot = multiboxplot;
   chart.legend = legend;
   chart.xAxis = xAxis;
   chart.yAxis = yAxis;
 
-  d3.rebind(chart, multibar, 'x', 'y', 'xDomain', 'yDomain', 'xRange', 'yRange', 'forceX', 'forceY', 'clipEdge',
+  d3.rebind(chart, multiboxplot, 'x', 'y', 'xDomain', 'yDomain', 'xRange', 'yRange', 'forceX', 'forceY', 'clipEdge',
    'id', 'stacked', 'stackOffset', 'delay', 'barColor','groupSpacing');
 
   chart.options = nv.utils.optionsFunc.bind(chart);
@@ -598,9 +595,9 @@ nv.models.multibarboxplotChart = function() {
   };
 
   //added by tungdt
-  chart.multibar = function(_) {
-    if (!arguments.length) return multibar;
-    multibar = _;
+  chart.multiboxplot = function(_) {
+    if (!arguments.length) return multiboxplot;
+    multiboxplot = _;
     return chart;
   };
 
@@ -625,11 +622,11 @@ nv.models.multiBoxplot = function() {
     , id = Math.floor(Math.random() * 10000) //Create semi-unique ID in case user doesn't select one
     , getX = function(d) { return d.x }
     , getY = function(d) { return d.y }
-    , getUpperY = function(d) { return d.quartileData[2] || 0 }			//edited
-    , getLowerY = function(d) { return d.quartileData[0] || 0 }			//edited
-    , getMedianY = function(d) { return d.quartileData[1] || 0 }		//edited
-    , getUpperWhisker = function(d) { return d.whiskerData[1] || 0 }	//edited
-    , getLowerWhisker = function(d) { return d.whiskerData[0] || 0 }	//edited
+    , getUpperY = function(d) { return d.quartileData[2] || 0 }     //edited
+    , getLowerY = function(d) { return d.quartileData[0] || 0 }     //edited
+    , getMedianY = function(d) { return d.quartileData[1] || 0 }    //edited
+    , getUpperWhisker = function(d) { return d.whiskerData[1] || 0 }  //edited
+    , getLowerWhisker = function(d) { return d.whiskerData[0] || 0 }  //edited
 
     , forceY = [0] // 0 is forced by default.. this makes sense for the majority of bar graphs... user can always do chart.forceY([]) to remove
     , clipEdge = true
@@ -638,7 +635,7 @@ nv.models.multiBoxplot = function() {
     , color = nv.utils.defaultColor()
     , hideable = false
     , barColor = null // adding the ability to set the color for each rather than the whole group
-    , disabled // used in conjunction with barColor to communicate from multiBarHorizontalChart what series are disabled
+    , disabled // used in conjunction with barColor to communicate from multiboxplotHorizontalChart what series are disabled
     , delay = 1200
     , xDomain
     , yDomain
@@ -719,7 +716,7 @@ nv.models.multiBoxplot = function() {
       var seriesData = (xDomain && yDomain) ? [] : // if we know xDomain and yDomain, no need to calculate
             data.map(function(d) {
               return d.values.map(function(d,i) {
-                return { x: getX(d,i), y: getY(d,i), y0: d.y0, y1: d.y1, max: d.max }	//y0 y1: stack, no need
+                return { x: getX(d,i), y: getY(d,i), y0: d.y0, y1: d.y1, max: d.max } //y0 y1: stack, no need
               })
             });
 
@@ -727,9 +724,24 @@ nv.models.multiBoxplot = function() {
           .rangeBands(xRange || [0, availableWidth], groupSpacing);
 
       //y   .domain(yDomain || d3.extent(d3.merge(seriesData).map(function(d) { return d.y + (stacked ? d.y1 : 0) }).concat(forceY)))
-      y.domain(yDomain || d3.extent(d3.merge(seriesData).map(function(d) { return d.max }).concat(forceY)))
-          .range(yRange || [availableHeight, 0]);	//edited by Tung
-
+      //Lcongote Modificado 13 de sept 2015, debido a que cuando el dominio tenia un valor negativo lo calculaba mal 
+      var tempMM=[];
+      console.log(seriesData);
+      //de todas las series mete en un vector los "y" para encontrar los max y min que van al dominio de "y"
+      seriesData.forEach(function(dataSerie){
+        dataSerie.forEach(function(dataY){
+          //console.log(JSON.stringify(dataY["y"]));
+          dataY["y"].forEach(function(d){
+            tempMM.push(d);
+          }) 
+        })
+        
+      })
+      
+      y.domain(yDomain || d3.extent(tempMM))
+          .range(yRange || [availableHeight, 0]); //edited by Tung
+      //Lcongote Modificado 13 de sept 2015, debido a que cuando el dominio tenia un valor negativo lo calculaba mal 
+      
       // If scale's domain don't have a range, slightly adjust to make one... so a chart can show a single data point
       if (x.domain()[0] === x.domain()[1])
         x.domain()[0] ?
@@ -752,7 +764,7 @@ nv.models.multiBoxplot = function() {
       // Setup containers and skeleton of chart
 
       var wrap = container.selectAll('g.nv-wrap.nv-multibar').data([data]);
-      var wrapEnter = wrap.enter().append('g').attr('class', 'nvd3 nv-wrap nv-multibar');	//different between wrap & wrapEnter ?
+      var wrapEnter = wrap.enter().append('g').attr('class', 'nvd3 nv-wrap nv-multibar'); //different between wrap & wrapEnter ?
       var defsEnter = wrapEnter.append('defs');
       var gEnter = wrapEnter.append('g');
       //var g = wrap.select('g')
@@ -787,7 +799,7 @@ nv.models.multiBoxplot = function() {
         .delay(function(d,i) {
              return i * delay/ data[0].values.length;
         })
-          .attr('y', function(d) { return stacked ? y0(d.y0) : y0( getLowerY(d) ) })	//edited by Tung
+          .attr('y', function(d) { return stacked ? y0(d.y0) : y0( getLowerY(d) ) })  //edited by Tung
           .attr('height', 0)
           .select(function() { return this.parentNode; })
           .remove();
@@ -801,14 +813,17 @@ nv.models.multiBoxplot = function() {
           .style('stroke-opacity', 1)
           .style('fill-opacity', .75);
 
-      var barContainers = groups.selectAll('g.box')	//added by Tung
-      	  .data(function(d) { return (hideable && !data.length) ? hideable.values : d.values });
+      var barContainers = groups.selectAll('g.box') //added by Tung
+          .data(function(d) { return (hideable && !data.length) ? hideable.values : d.values });
+
+      barContainers.exit().remove();
+
       var barContainersEnter = barContainers.enter().append('g');
 
-      	  barContainers.attr("class", function(d,i) { return "box bar-container-" + i })
+          barContainers.attr("class", function(d,i) { return "box bar-container-" + i })
           .transition()
           .attr('transform', function(d,i) { return 'translate(' + x(getX(d,i)) + ',0)'; })//added
-      	  ;// d: data of a group's element
+          ;// d: data of a group's element
 
       barContainersEnter.append('line').attr("class", "center")
           .attr('x1', function(d,i,j){
@@ -835,8 +850,8 @@ nv.models.multiBoxplot = function() {
 
 
       var linesVertical = barContainers.select('line.center')
-      	  .datum(function(d) { return d })	//tung
-      	  .transition()
+          .datum(function(d) { return d })  //tung
+          .transition()
           .delay(function(d,i) {
                 return i * delay/ data[0].values.length;
             })
@@ -852,13 +867,13 @@ nv.models.multiBoxplot = function() {
           .attr('y2', function(d,i){
             return y0( getUpperWhisker(d) );
           })
-      	  
+          
           //.attr('transform', function(d,i) { return 'translate(' + x(getX(d,i)) + ',0)'; })
           ;
 
 
       var bars = barContainers.select('rect')
-      	  .datum(function(d) { return d })	//tung
+          .datum(function(d) { return d })  //tung
           
           //.attr('transform', function(d,i) { return 'translate(' + x(getX(d,i)) + ',0)'; })
           ;
@@ -911,7 +926,7 @@ nv.models.multiBoxplot = function() {
       // draw bar
 
       bars
-          .style('fill', function(d,i,j){ return color(d, j, i);  })	// i: index of rect, j: index of g.nv-group
+          .style('fill', function(d,i,j){ return color(d, j, i);  })  // i: index of rect, j: index of g.nv-group
           .style('stroke', function(d,i,j){ return color(d, j, i); })
           .on('mouseover', function(d,i) { //TODO: figure out why j works above, but not here
             d3.select(this).classed('hover', true);
@@ -1018,14 +1033,15 @@ nv.models.multiBoxplot = function() {
             })
             .attr('width', x.rangeBand() / data.length)
             .attr('y', function(d,i) {
-                return getUpperY(d,i) < 0 ?	//edited
-                        y(0) :
+                //console.log(getUpperY(d,i));
+                return getUpperY(d,i) < 0 ? //edited
+                        y(getUpperY(d,i)) ://modificado Lcongote, y(0) ->y(getUpperY(d,i)), siempre inciiaba rectangulo en cero
                         y(0) - y(getUpperY(d,i)) < 1 ?
                           y(0) - 1 :
                         y(getUpperY(d,i)) || 0;
             })
             .attr('height', function(d,i) {
-                return Math.max(Math.abs(y(getUpperY(d,i)) - y( getLowerY(d) )),1) || 0;	//edited
+                return Math.max(Math.abs(y(getUpperY(d,i)) - y( getLowerY(d) )),1) || 0;  //edited
             });
 
       //store old scales for use in transitions on update
@@ -1187,4 +1203,4 @@ nv.models.multiBoxplot = function() {
   return chart;
 }
 
-})(jQuery);
+})();

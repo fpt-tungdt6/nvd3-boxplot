@@ -1,0 +1,30 @@
+{
+  "name": "nvd3-boxplot",
+  "version": "0.1.0",
+  "homepage": "https://github.com/analyticboard/nvd3-boxplot",
+  "authors": [
+    "Dang Tung",
+    "Jaime Garcia"
+  ],
+  "description": "NVD3 Boxplot Chart",
+  "main": "index.html",
+  "keywords": [
+    "d3",
+    "visualization",
+    "nvd3",
+    "boxplot"
+  ],
+  "license": "MIT",
+  "private": false,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "d3": "~3.4.1",
+    "nvd3": "~v1.1.15-beta"
+  }
+}
